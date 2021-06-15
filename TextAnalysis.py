@@ -20,7 +20,7 @@ def Training(FilePath, Method = False):
         exit()
     dataset=None
     try:
-        dataset = load_files(FilePath)
+        dataset = load_files(FilePath) #Loads each folder inside the directory as a category e.g. if I have Travel and NotTravel folders it will use those categories
     except:
         print("Please put text in target folders")
         exit()
@@ -29,12 +29,12 @@ def Training(FilePath, Method = False):
     x, y = dataset.data, dataset.target
     Categories = dataset.target_names
     documents = []
-    if Method is False:
+    if Method is False: #uses simple preprocess from the gensim package
         from gensim.utils import simple_preprocess
         for sen in x:
             simple_preprocess(sen)
         documents=x
-    elif Method is True:
+    elif Method is True: #uses a more elaborate preprocessing using a lemmatizer and regular expressions
         from nltk.stem import WordNetLemmatizer
         import re
         stemmer = WordNetLemmatizer()
@@ -65,17 +65,17 @@ def Training(FilePath, Method = False):
 
             documents.append(document)
     vectorizer = CountVectorizer(min_df = 5,max_df=0.7, ngram_range=(1,3), stop_words=stopwords.words('english'))
-    x = vectorizer.fit_transform(documents).toarray()
+    x = vectorizer.fit_transform(documents).toarray() #converts the processed documents in a vector
     tfidfconverter = TfidfTransformer()
-    x = tfidfconverter.fit_transform(x).toarray()
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
+    x = tfidfconverter.fit_transform(x).toarray() #applies tfidf
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3) #splits the corpus in test groups.
 
-    clf = MultinomialNB()
-    clf.fit(x_train, y_train)
-    y_pred = clf.predict(x_test)
-    print(confusion_matrix(y_test, y_pred))
-    print(classification_report(y_test, y_pred, target_names=Categories))
-    print(accuracy_score(y_test, y_pred))
+    clf = MultinomialNB() 
+    clf.fit(x_train, y_train) #fits a classifier
+    y_pred = clf.predict(x_test) #makes the classifier predict
+    print(confusion_matrix(y_test, y_pred)) #results
+    print(classification_report(y_test, y_pred, target_names=Categories)) #returns precision, recall and combined accuracy.
+    print(accuracy_score(y_test, y_pred)) #returns combined accuracy.
     return accuracy_score(y_test, y_pred)
 
 
