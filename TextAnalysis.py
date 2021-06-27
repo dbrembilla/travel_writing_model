@@ -66,8 +66,8 @@ def Training(FilePath, Method = False):
             documents.append(document)
     vectorizer = CountVectorizer(min_df = 5,max_df=0.7, ngram_range=(1,3), stop_words=stopwords.words('english'))
     x = vectorizer.fit_transform(documents).toarray() #converts the processed documents in a vector
-    tfidfconverter = TfidfTransformer()
-    x = tfidfconverter.fit_transform(x).toarray() #applies tfidf
+    #tfidfconverter = TfidfTransformer()
+    #x = tfidfconverter.fit_transform(x).toarray() #applies tfidf
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3) #splits the corpus in test groups.
 
     clf = MultinomialNB() 
